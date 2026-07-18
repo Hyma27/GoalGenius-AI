@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand-light: #f8fafc;
+  --color-brand-dark: #0f172a;
+  --color-brand-primary: #3b82f6;
+  --color-brand-teal: #14b8a6;
+  --color-brand-purple: #a855f7;
+  
+  --font-sans: 'Inter', 'Poppins', sans-serif;
+  
+  --animate-float-ball: floatBall 4s ease-in-out infinite;
+  --animate-pulse-glow: pulseGlow 2s ease-in-out infinite;
+  --animate-spin-slow: spin 20s linear infinite;
+}
+
+@keyframes floatBall {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+/* Custom styles */
+.glass-panel {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+}
+
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Ken Burns effect */
+.animate-kenburns {
+  animation: kenBurns 40s ease-out infinite alternate;
+}
+
+@keyframes kenBurns {
+  0% { transform: scale(1.02) rotate(0deg); }
+  100% { transform: scale(1.12) rotate(1deg); }
+}
+
+/* Floating animation delays */
+.animate-float-1 {
+  animation: floatCard 6s ease-in-out infinite;
+}
+.animate-float-2 {
+  animation: floatCard 7s ease-in-out infinite 1s;
+}
+.animate-float-3 {
+  animation: floatCard 8s ease-in-out infinite 2s;
+}
+
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.page-transition {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}

@@ -197,8 +197,10 @@ async def generate_ai_content(req: AIRequest):
             conf = round(95.0 + random.random() * 4.9, 1)
             return {"text": response.text, "confidence": conf}
         except Exception as e:
-            # Fallback to simulated response if API calls fail (e.g. rate limit / network drop)
-            pass
+           return {
+               "text": f"Gemini Error: {str(e)}",
+               "confidence": 0
+           }
 
     # Simulated fallback response engine (secured on the server)
     conf = round(97.0 + random.random() * 2.9, 1)

@@ -22,6 +22,7 @@ GoalGenius AI is a next-generation, AI-powered Smart Stadium Operations and Fan 
 
 - [Overview](#%EF%B8%8F-goalgenius-ai)
 - [Features](#-features)
+- [Screenshots](#-screenshots)
 - [System Architecture](#%EF%B8%8F-system-architecture)
 - [Tech Stack](#-tech-stack)
 - [Project Structure](#-project-structure)
@@ -37,13 +38,32 @@ GoalGenius AI is a next-generation, AI-powered Smart Stadium Operations and Fan 
 ## 🌟 Features
 
 *   **🛡️ AI Stadium Copilot**: A centralized operations command board displaying live seat occupancy, current weather conditions, retractable roof updates, active staff rosters, and an interactive AI terminal for direct operator overrides.
-*   **♻️ Sustainability Dashboard**: Interactive charts tracking carbon savings, water conservation indices, and solid waste category audits (recyclables, organics, and landfill landfill sorting) along with generative carbon-reduction guides.
+*   **♻️ Sustainability Dashboard**: Interactive charts tracking carbon savings, water conservation indices, and solid waste category audits (recyclables, organics, and landfill sorting) along with generative carbon-reduction guides.
 *   **🗺️ Interactive Stadium Map**: Highly responsive CSS/SVG-drawn arena layout mapping gates A-F, parking zones, medical bays, emergency exits, and ADA washrooms, paired with live AI congestion path indicators.
 *   **🤖 AI ChatGPT-Style Concierge**: Translates operational commands and fan queries on seat finding, gate wait-times, and weather. Features speech recognition, prompt recommendations, and conversation history.
 *   **🚄 Multimodal Travel Copilot**: Plans and checks routing choices across metro networks, shuttles, and walking avenues using dynamic safety risk scores and dynamic carbon comparison graphs.
 *   **🩺 Incident Operations Center**: Coordinates incident reporting, parses telemetry logs, and triggers volunteer dispatch instructions for medical or facility emergencies.
 *   **♿ Accessibility Portal**: Equips disabled guests with high-contrast templates, auditory status broadcasts, and physical chaperone request alarms.
 *   **📋 Volunteer Allocation**: Displays dynamic roster counts (active vs standby), rosters, and AI task lists matching incident workloads.
+
+---
+
+## 📸 Screenshots
+
+### Login Screen
+![Login Screen](Screenshots/Login%20page.png)
+
+### Dashboard
+![Dashboard](Screenshots/Dashboard.png)
+
+### Interactive Stadium Map
+![Interactive Stadium Map](Screenshots/Ground%20Map.png)
+
+### AI Chatbot
+![AI Chatbot](Screenshots/Chatbot.png)
+
+### Reports
+![Reports](Screenshots/Reports.png)
 
 ---
 
@@ -184,3 +204,9 @@ python -m pytest
 *   **Dynamic Prompts**: Telemetry parameters (occupancy, delay indexes, weather states, incident category) are compiled into prompt templates.
 *   **Dynamic Custom Credentials**: Secure `X-Gemini-Key` header mapping enables operators to configure their own developer keys directly in Settings for real-time generative responses.
 *   **Rule-Based Failover Engine**: If API keys are missing or offline, a complex local rule-based intelligence engine generates tailored recommendations based on prompt context to guarantee zero static/hardcoded AI strings.
+
+---
+
+## 👤 Author
+
+*   **Name**: [Hyma Sri Narala]

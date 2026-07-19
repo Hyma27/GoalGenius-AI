@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 export interface GeminiResponse {
   text: string;
@@ -8,6 +9,7 @@ export interface GeminiResponse {
 export const useGemini = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { getAuthHeaders } = useAuth();
 
   /**
    * Sends user prompt telemetry to the backend Gemini wrapper endpoint.
@@ -17,16 +19,24 @@ export const useGemini = () => {
     setLoading(true);
     setError(null);
 
-    // Resolve API endpoint origin (maps to localhost:8000 during dev port 5173 sessions)
-    const targetUrl =
-      window.location.port === '5173'
-        ? 'http://localhost:8000/api/ai/generate'
-        : 'https://goalgenius-ai-2.onrender.com/api/ai/generate';
+    // Resolve API endpoint origin dynamically
+    let targetUrl = '/api/ai/generate';
+    if (typeof window !== 'undefined' && window.location) {
+      const port = window.location.port;
+      const hostname = window.location.hostname;
+      if (port === '5173' || port === '3000' || hostname === 'localhost' || hostname === '127.0.0.1') {
+        targetUrl = 'http://localhost:8000/api/ai/generate';
+      } else if (window.location.origin && window.location.origin !== 'null') {
+        targetUrl = `${window.location.origin}/api/ai/generate`;
+      }
+    }
 
     try {
+      const authHeaders = getAuthHeaders();
       const response = await fetch(targetUrl, {
         method: 'POST',
         headers: {
+          ...authHeaders,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

@@ -16,6 +16,9 @@ const AccessibilityAssistant = lazy(() => import('./pages/AccessibilityAssistant
 const OperationsCenter = lazy(() => import('./pages/OperationsCenter').then(module => ({ default: module.OperationsCenter })));
 const Reports = lazy(() => import('./pages/Reports').then(module => ({ default: module.Reports })));
 const Settings = lazy(() => import('./pages/Settings').then(module => ({ default: module.Settings })));
+const VolunteerCenter = lazy(() => import('./pages/VolunteerCenter').then(module => ({ default: module.VolunteerCenter })));
+const StadiumCopilot = lazy(() => import('./pages/StadiumCopilot').then(module => ({ default: module.StadiumCopilot })));
+const SustainabilityDashboard = lazy(() => import('./pages/SustainabilityDashboard').then(module => ({ default: module.SustainabilityDashboard })));
 
 // Loading skeleton fallback boundary
 const SkeletonLoader: React.FC = () => (
@@ -101,6 +104,30 @@ const App: React.FC = () => {
             element={
               <Suspense fallback={<SkeletonLoader />}>
                 <OperationsCenter />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/volunteer-allocation" 
+            element={
+              <Suspense fallback={<SkeletonLoader />}>
+                <VolunteerCenter />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/copilot" 
+            element={
+              <Suspense fallback={<SkeletonLoader />}>
+                <StadiumCopilot />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/sustainability" 
+            element={
+              <Suspense fallback={<SkeletonLoader />}>
+                <SustainabilityDashboard />
               </Suspense>
             } 
           />

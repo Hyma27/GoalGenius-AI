@@ -1,13 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSimulation } from '../context/SimulationContext';
+import { useGemini } from '../hooks/useGemini';
+import { useLanguage } from '../context/LanguageContext';
 import { 
-  Clock, Leaf, DollarSign, Train, Bus, Car
+  Clock, Leaf, DollarSign, Train, Bus, Car, Sparkles, RefreshCw 
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export const TravelCopilot: React.FC = () => {
+  const { language } = useLanguage();
+  const { askGemini, loading } = useGemini();
   const { transitLines } = useSimulation();
   const [selectedRoute, setSelectedRoute] = useState<'fastest' | 'cheapest' | 'eco'>('fastest');
+  
+  const [aiTravelTip, setAiTravelTip] = useState(
+    "AI Route Recommendation: Metro Line 1 is operating normally (28m). We suggest utilizing public transit as the World Cup Pass offers zero fare and saves 8.0kg CO2 compared to private taxis."
+  );
+
+  const fetchTravelTip = async () => {
+    const prompt = `
+      Analyze this transit state:
+      ${transitLines.map(t => `- ${t.line}: status ${t.status}, delay ${t.delayMin}m, crowd ${t.crowdLevel}`).join('\n')}
+      Provide a highly precise dynamic recommendation comparing Travel times, carbon footprint, and costs. Limit to 2 sentences.
+    `;
+    try {
+      const response = await askGemini(prompt, 'travel', language);
+      setAiTravelTip(response.text);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTravelTip();
+  }, []);
 
   // Chart data comparing transport modes
   const modeComparisonData = [
@@ -21,16 +47,27 @@ export const TravelCopilot: React.FC = () => {
     <div className="flex flex-col gap-6 md:gap-8 font-sans">
       
       {/* Header */}
-      <div>
-        <span className="text-[10px] tracking-wider font-extrabold text-blue-500 uppercase px-2.5 py-1 bg-blue-100/60 dark:bg-blue-900/40 rounded-full">
-          TRANSIT INTEGRATOR
-        </span>
-        <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight mt-2">
-          AI Travel Copilot
-        </h1>
-        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-          Coordinate multimodal transit options with live capacity updates and environmental ratings.
-        </p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <span className="text-[10px] tracking-wider font-extrabold text-blue-500 uppercase px-2.5 py-1 bg-blue-100/60 dark:bg-blue-900/40 rounded-full">
+            TRANSIT INTEGRATOR
+          </span>
+          <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight mt-2">
+            AI Travel Copilot
+          </h1>
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+            Coordinate multimodal transit options with live capacity updates and environmental ratings.
+          </p>
+        </div>
+
+        <button 
+          onClick={fetchTravelTip}
+          disabled={loading}
+          className="px-4 py-2 border border-slate-200 dark:border-slate-800 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold shadow-sm flex items-center gap-1.5 transition-colors disabled:opacity-50"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+          <span>Refresh Transit AI</span>
+        </button>
       </div>
 
       {/* Route Mode Matrix */}
@@ -107,11 +144,35 @@ export const TravelCopilot: React.FC = () => {
             ))}
           </div>
 
-          <div className="text-[9px] text-slate-400 text-center border-t border-slate-100 dark:border-slate-800/80 pt-3 itialic">
+          <div className="text-[9px] text-slate-400 text-center border-t border-slate-100 dark:border-slate-800/80 pt-3 italic">
             * Direct integration with World Cup Transit Authority
           </div>
         </div>
 
+      </div>
+
+      {/* AI Recommendation Highlight Box */}
+      <div className="glass-panel rounded-3xl p-5 border border-blue-500/20 bg-blue-50/10 dark:bg-slate-900/20">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+            <Sparkles className="w-4.5 h-4.5 animate-pulse" />
+          </div>
+          <div>
+            <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">AI Transit Copilot Recommendation</h3>
+            <p className="text-[10px] text-slate-400">Carbon offset and wait-time optimized guidance</p>
+          </div>
+        </div>
+
+        <div className="p-4 bg-white dark:bg-slate-950 border border-slate-200/50 dark:border-slate-800 rounded-2xl text-xs text-slate-700 dark:text-slate-200 font-semibold leading-relaxed">
+          {loading ? (
+            <div className="flex items-center gap-2 py-4 justify-center">
+              <span className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></span>
+              <span className="text-[9px] text-slate-400 animate-pulse">Running carbon transit comparison...</span>
+            </div>
+          ) : (
+            aiTravelTip
+          )}
+        </div>
       </div>
 
     </div>

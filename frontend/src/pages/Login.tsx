@@ -193,6 +193,7 @@ export const Login: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter email address"
                   required
+                  aria-label="Email Address"
                   className={`px-4 py-2.5 rounded-xl border focus:outline-none transition-all ${
                     theme === 'dark' 
                       ? 'bg-slate-900/50 border-slate-800 text-slate-100 placeholder-slate-500 focus:bg-slate-950 focus:border-purple-500' 
@@ -210,6 +211,7 @@ export const Login: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   required
+                  aria-label="Password"
                   className={`px-4 py-2.5 rounded-xl border focus:outline-none transition-all ${
                     theme === 'dark' 
                       ? 'bg-slate-900/50 border-slate-800 text-slate-100 placeholder-slate-500 focus:bg-slate-950 focus:border-purple-500' 

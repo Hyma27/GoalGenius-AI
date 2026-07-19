@@ -36,11 +36,14 @@ export const Navbar: React.FC = () => {
 
   const navLinks = [
     { path: '/dashboard', label: 'Dashboard' },
+    { path: '/copilot', label: 'Stadium Copilot' },
     { path: '/match-planner', label: 'Match Planner' },
     { path: '/navigation', label: 'Smart Navigation' },
     { path: '/crowd-ai', label: 'Crowd Intelligence' },
     { path: '/travel', label: 'Smart Travel' },
     { path: '/accessibility', label: 'Accessibility' },
+    { path: '/sustainability', label: 'Sustainability' },
+    { path: '/volunteer-allocation', label: 'Volunteer Roster' },
     { path: '/operations-hub', label: 'Operations Hub' },
     { path: '/reports', label: 'Reports' },
     { path: '/settings', label: 'Settings' },

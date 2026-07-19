@@ -14,9 +14,36 @@ import os
 import time
 import jwt
 import html
+import logging
+import json
+from motor.motor_asyncio import AsyncIOMotorClient
 
 # Load backend environment secrets
 load_dotenv()
+
+# Setup structured logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("goalgenius")
+
+class StructuredFormatter(logging.Formatter):
+    def format(self, record):
+        log_entry = {
+            "timestamp": self.formatTime(record, self.datefmt),
+            "level": record.levelname,
+            "message": record.getMessage(),
+            "module": record.module,
+            "filename": record.filename,
+            "lineno": record.lineno
+        }
+        if record.exc_info:
+            log_entry["exception"] = self.formatException(record.exc_info)
+        return json.dumps(log_entry)
+
+# Attach formatter to stdout handler
+handler = logging.StreamHandler()
+handler.setFormatter(StructuredFormatter())
+logger.handlers = [handler]
+logger.propagate = False
 
 app = FastAPI(
     title="GoalGenius AI Backend", 
@@ -24,6 +51,32 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc"
 )
+
+# Graceful MongoDB connection variables
+mongo_client: Optional[AsyncIOMotorClient] = None
+db = None
+
+@app.on_event("startup")
+async def startup_db_client():
+    global mongo_client, db
+    mongo_url = os.getenv("MONGODB_URL", "mongodb://localhost:27017/goalgenius")
+    logger.info("Attempting connection to MongoDB...")
+    try:
+        mongo_client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=2000)
+        await mongo_client.admin.command('ping')
+        db = mongo_client.get_default_database()
+        logger.info("Connected to MongoDB successfully.")
+    except Exception as e:
+        logger.warning(f"MongoDB connection failed: {e}. Falling back to memory-only simulation mode.")
+        mongo_client = None
+        db = None
+
+@app.on_event("shutdown")
+async def shutdown_db_client():
+    global mongo_client
+    if mongo_client:
+        mongo_client.close()
+        logger.info("MongoDB client connection closed gracefully.")
 
 # JWT Secret Configuration
 JWT_SECRET = os.getenv("JWT_SECRET_KEY", "fifa_worldcup_2026_secret_key_98_score")
@@ -37,6 +90,7 @@ def create_jwt_token(email: str, name: str, role: str) -> str:
         "role": role,
         "exp": time.time() + 86400  # 1 day expiration
     }
+    logger.info(f"Issuing JWT token for user: {email} with role: {role}")
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 def verify_jwt_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
@@ -45,8 +99,10 @@ def verify_jwt_token(credentials: HTTPAuthorizationCredentials = Depends(securit
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         return payload
     except jwt.ExpiredSignatureError:
+        logger.warning("Expired JWT validation attempt received.")
         raise HTTPException(status_code=401, detail="Token has expired")
     except jwt.InvalidTokenError:
+        logger.warning("Invalid/corrupted JWT signature validation attempt.")
         raise HTTPException(status_code=401, detail="Invalid token")
 
 # ---------------------------------------------------------
@@ -188,9 +244,12 @@ async def generate_match_plan(
         match_id = html.escape(req.match_id)
         transport = html.escape(req.transport_mode)
         
+        logger.info(f"Generating matchday plan: Match={match_id}, Hotel={hotel}, Mode={transport}, User={token_payload.get('sub')}")
+        
         api_key = x_gemini_key or GEMINI_API_KEY
         if api_key:
             try:
+                logger.info("Calling Gemini API for matchday plan...")
                 genai.configure(api_key=api_key)
                 model = genai.GenerativeModel("gemini-1.5-flash")
                 prompt = (
@@ -208,12 +267,13 @@ async def generate_match_plan(
                 )
                 import json
                 res_data = json.loads(response.text)
+                logger.info("Successfully generated plan from Gemini.")
                 return {
                     "status": "success",
                     **res_data
                 }
-            except Exception:
-                pass  # Fall through to dynamic fallback on API failure
+            except Exception as ex:
+                logger.warning(f"Gemini API plan generation failed: {ex}. Running fallback algorithm.")
 
         # Simulated fallback response engine (secured & dynamically customized based on inputs)
         timeline = [
@@ -224,6 +284,7 @@ async def generate_match_plan(
             {"time": "Kickoff!", "activity": f"Find your seat at MetLife. Enjoy the match: {match_id}!", "tip": "Contact nearby volunteer marshals in case of emergency support requests."}
         ]
 
+        logger.info("Serving dynamic fallback matchday plan details.")
         return {
             "status": "success",
             "timeline": timeline,
@@ -236,6 +297,7 @@ async def generate_match_plan(
             "travel_alerts": "Metro Line 2 operating on-schedule. Regular shuttle services active."
         }
     except Exception as e:
+        logger.error(f"Error generating matchday plan details: {e}")
         raise HTTPException(status_code=500, detail="Error generating match timeline details.")
 
 @app.post("/api/incident/analyze")
@@ -254,9 +316,12 @@ async def analyze_incident(
         loc = html.escape(location)
         desc = html.escape(description)
 
+        logger.info(f"Analyzing incident: Category={inc_type}, Severity={sev}, Location={loc}, User={token_payload.get('sub')}")
+
         api_key = x_gemini_key or GEMINI_API_KEY
         if api_key:
             try:
+                logger.info("Calling Gemini API for incident analysis...")
                 genai.configure(api_key=api_key)
                 model = genai.GenerativeModel("gemini-1.5-flash")
                 prompt = (
@@ -275,6 +340,7 @@ async def analyze_incident(
                 )
                 import json
                 res_data = json.loads(response.text)
+                logger.info("Successfully analyzed incident via Gemini.")
                 return {
                     "incident_type": inc_type,
                     "severity": sev,
@@ -286,8 +352,8 @@ async def analyze_incident(
                     "estimated_resolution_time_min": res_data.get("estimated_resolution_time_min", 15),
                     "report_id": f"GG-2026-{random.randint(10000, 99999)}"
                 }
-            except Exception:
-                pass  # Fall through to dynamic fallback
+            except Exception as ex:
+                logger.warning(f"Gemini incident analysis failed: {ex}. Running fallback algorithm.")
 
         resolution_times = {"LOW": 15, "MEDIUM": 30, "HIGH": 12, "CRITICAL": 8}
         time_est = resolution_times.get(sev, 20)
@@ -303,6 +369,7 @@ async def analyze_incident(
         staff = required_staff.get(inc_type, ["Duty Officer"])
         priority = "HIGH" if sev in ["HIGH", "CRITICAL"] else "MEDIUM" if sev == "MEDIUM" else "LOW"
         
+        logger.info("Serving dynamic fallback incident analysis details.")
         return {
             "incident_type": inc_type,
             "severity": sev,
@@ -315,6 +382,7 @@ async def analyze_incident(
             "report_id": f"GG-2026-{random.randint(10000, 99999)}"
         }
     except Exception as e:
+        logger.error(f"Error analyzing incident: {e}")
         raise HTTPException(status_code=500, detail="Error analyzing incident data.")
 
 # Secure Server-Side Gemini Wrapper API
@@ -328,9 +396,12 @@ async def generate_ai_content(
     context_type = html.escape(req.context_type)
     language = html.escape(req.language)
 
+    logger.info(f"AI content request received: context_type={context_type}, language={language}, User={token_payload.get('sub')}")
+
     api_key = x_gemini_key or GEMINI_API_KEY
     if api_key:
         try:
+            logger.info("Calling Gemini API for text generation...")
             genai.configure(api_key=api_key)
             model = genai.GenerativeModel("gemini-1.5-flash")
             system_prompt = (
@@ -341,9 +412,10 @@ async def generate_ai_content(
             )
             response = model.generate_content(f"{system_prompt}\n\nPrompt: {prompt}")
             conf = round(95.0 + random.random() * 4.9, 1)
+            logger.info("Successfully fetched response from Gemini API.")
             return {"text": response.text, "confidence": conf}
         except Exception as e:
-            pass  # Fall through to mock responses on error
+            logger.warning(f"Gemini API completion failed: {e}. Running local backup generator.")
 
     # Simulated fallback response engine (secured & dynamically customized based on prompt keywords)
     conf = round(97.0 + random.random() * 2.9, 1)
@@ -372,7 +444,9 @@ async def generate_ai_content(
     else:
         text = f"GoalGenius AI Assistant: Smart operational analytics active for context '{context_type}'."
         
+    logger.info("Serving dynamic fallback generative completions.")
     return {"text": text, "confidence": conf}
+
 
 # ---------------------------------------------------------
 # FRONTEND STATIC FILES INTEGRATION

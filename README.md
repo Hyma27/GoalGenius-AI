@@ -51,19 +51,19 @@ GoalGenius AI is a next-generation, AI-powered Smart Stadium Operations and Fan 
 *(Images can be embedded below once uploaded to your repository)*
 
 ### Login Screen
-![Login Screen Mockup](https://raw.githubusercontent.com/Hyma27/GoalGenius-AI/main/docs/screenshots/login.png)
+![Login Screen Mockup](Login page.png)
 
 ### Dashboard
-![Dashboard Console Overview](https://raw.githubusercontent.com/Hyma27/GoalGenius-AI/main/docs/screenshots/dashboard.png)
+![Dashboard Console Overview](Dashboard.png)
 
 ### Interactive Stadium Map
-![Interactive Map Layout](https://raw.githubusercontent.com/Hyma27/GoalGenius-AI/main/docs/screenshots/stadium_map.png)
+![Interactive Map Layout](Ground Map.png)
 
 ### AI Chatbot
-![Chatbot Conversation Panel](https://raw.githubusercontent.com/Hyma27/GoalGenius-AI/main/docs/screenshots/chatbot.png)
+![Chatbot Conversation Panel](Chatbot.png)
 
 ### Reports
-![Simulation Data Reports](https://raw.githubusercontent.com/Hyma27/GoalGenius-AI/main/docs/screenshots/reports.png)
+![Simulation Data Reports](Reports.png)
 
 ---
 
@@ -230,7 +230,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👤 Author
 
-*   **Name**: [Your Name / Team Name]
-*   **LinkedIn**: [LinkedIn Profile Link]
-*   **GitHub**: [@YourGitHubUsername](https://github.com/YourGitHubUsername)
-*   **Email**: director@worldcup2026.org
+*   **Name**: [Hyma Sri Narala]

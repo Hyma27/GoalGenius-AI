@@ -25,9 +25,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (email && password) {
       const isOps = email.includes('ops') || email.includes('admin');
       const isVol = email.includes('volunteer');
+      const displayName = email.split('@')[0];
+
       const newUser: User = {
         email,
-        name: isOps ? "FIFA Stadium Director" : isVol ? "Voluntario Carlos" : "Alex Morgan (Fan)",
+        name: isOps
+          ? "FIFA Stadium Director"
+          : isVol
+          ? "Voluntario Carlos"
+          : displayName,
         isGuest: false,
         role: isOps ? 'admin' : isVol ? 'volunteer' : 'fan'
       };

@@ -48,22 +48,27 @@ GoalGenius AI is a next-generation, AI-powered Smart Stadium Operations and Fan 
 
 ## 📸 Screenshots
 
-*(Images can be embedded below once uploaded to your repository)*
+
 
 ### Login Screen
-![Login Screen Mockup](Login page.png)
+
+![Login Screen](screenshots/Login%20page.png)
 
 ### Dashboard
-![Dashboard Console Overview](Dashboard.png)
+
+![Dashboard](screenshots/Dashboard.png)
 
 ### Interactive Stadium Map
-![Interactive Map Layout](Ground Map.png)
+
+![Interactive Stadium Map](screenshots/Ground%20Map.png)
 
 ### AI Chatbot
-![Chatbot Conversation Panel](Chatbot.png)
+
+![AI Chatbot](screenshots/Chatbot.png)
 
 ### Reports
-![Simulation Data Reports](Reports.png)
+
+![Reports](screenshots/Reports.png)
 
 ---
 

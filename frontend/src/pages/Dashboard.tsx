@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSimulation } from '../context/SimulationContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import { StadiumMap } from '../components/StadiumMap';
 import { 
   Trophy, CloudRain, Sun, Users, Navigation, AlertTriangle, ShieldCheck, 
   MapPin, HelpCircle, Utensils, Heart, CheckCircle2, ChevronRight, BookOpen, Compass
@@ -208,18 +209,20 @@ export const Dashboard: React.FC = () => {
               
               {/* Feature filters */}
               <div className="flex flex-wrap gap-1.5 text-[9px] font-bold">
-                {[
-                  { id: 'all', label: 'All features' },
-                  { id: 'gates', label: 'Gates' },
-                  { id: 'parking', label: 'Parking' },
-                  { id: 'food', label: 'Food Court' },
-                  { id: 'medical', label: 'Medical' },
-                  { id: 'exits', label: 'Exits' },
-                  { id: 'restrooms', label: 'Washrooms' },
-                ].map(item => (
+                {(
+                  [
+                    { id: 'all', label: 'All features' },
+                    { id: 'gates', label: 'Gates' },
+                    { id: 'parking', label: 'Parking' },
+                    { id: 'food', label: 'Food Court' },
+                    { id: 'medical', label: 'Medical' },
+                    { id: 'exits', label: 'Exits' },
+                    { id: 'restrooms', label: 'Washrooms' },
+                  ] as const
+                ).map(item => (
                   <button
                     key={item.id}
-                    onClick={() => setActiveMapFeature(item.id as any)}
+                    onClick={() => setActiveMapFeature(item.id)}
                     className={`px-2 py-1 rounded-lg border transition-all ${
                       activeMapFeature === item.id 
                         ? 'bg-blue-600 border-blue-600 text-white shadow-sm' 
@@ -233,83 +236,9 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Stadium CSS Drawing */}
+          {/* Stadium CSS Drawing Sub-Component */}
           <div className="flex-1 flex items-center justify-center py-6">
-            <div className="relative w-full max-w-[400px] aspect-[4/3] rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-4 shadow-inner flex items-center justify-center overflow-hidden">
-              
-              {/* Outer Corridor Oval */}
-              <div className="absolute inset-6 rounded-3xl border border-slate-200 dark:border-slate-800/80 flex items-center justify-center p-6 bg-white dark:bg-slate-900/50">
-                {/* Field */}
-                <div className="w-1/2 h-1/2 bg-gradient-to-tr from-green-600 to-green-700 border-2 border-white/50 rounded-lg flex items-center justify-center shadow">
-                  <span className="text-[8px] font-bold text-white/40 tracking-wider">USA-MEX PITCH</span>
-                </div>
-              </div>
-
-              {/* Dynamic Path Routing line */}
-              {(activeMapFeature === 'all' || activeMapFeature === 'gates') && (
-                <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M 60 220 L 140 220 L 140 100 L 260 100" fill="none" stroke="#3b82f6" strokeWidth="4" strokeLinecap="round" strokeDasharray="6 4" className="animate-pulse" />
-                  <circle cx="60" cy="220" r="5" fill="#3b82f6" />
-                  <circle cx="260" cy="100" r="5" fill="#10b981" />
-                </svg>
-              )}
-
-              {/* Gates A-F Overlay */}
-              {(activeMapFeature === 'all' || activeMapFeature === 'gates') && (
-                <>
-                  <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 text-[9px] font-extrabold px-1.5 py-0.5 bg-emerald-500 text-white rounded">Gate A</div>
-                  <div className="absolute top-1/2 -left-1.5 -translate-y-1/2 text-[9px] font-extrabold px-1.5 py-0.5 bg-red-500 text-white rounded">Gate B</div>
-                  <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 text-[9px] font-extrabold px-1.5 py-0.5 bg-emerald-500 text-white rounded">Gate C</div>
-                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 text-[9px] font-extrabold px-1.5 py-0.5 bg-emerald-500 text-white rounded">Gate D</div>
-                </>
-              )}
-
-              {/* Parking Overlay */}
-              {(activeMapFeature === 'all' || activeMapFeature === 'parking') && (
-                <div className="absolute bottom-4 left-6 px-2 py-1 bg-blue-600 text-white rounded text-[8px] font-black shadow-sm">
-                  LOT WEST (AI ROUTE START)
-                </div>
-              )}
-
-              {/* Food Courts Overlay */}
-              {(activeMapFeature === 'all' || activeMapFeature === 'food') && (
-                <>
-                  <div className="absolute top-10 left-12 p-1.5 rounded-lg bg-amber-500 text-white border border-white/20 shadow-md">
-                    <Utensils className="w-3.5 h-3.5" />
-                  </div>
-                  <div className="absolute bottom-10 right-12 p-1.5 rounded-lg bg-amber-500 text-white border border-white/20 shadow-md">
-                    <Utensils className="w-3.5 h-3.5" />
-                  </div>
-                </>
-              )}
-
-              {/* Medical Center Overlay */}
-              {(activeMapFeature === 'all' || activeMapFeature === 'medical') && (
-                <div className="absolute top-10 right-14 px-2 py-1 bg-purple-600 text-white border border-white/10 rounded text-[8px] font-black shadow">
-                  MED CENTER 1
-                </div>
-              )}
-
-              {/* Emergency Exits Overlay */}
-              {(activeMapFeature === 'all' || activeMapFeature === 'exits') && (
-                <div className="absolute bottom-6 right-6 px-2 py-1 bg-red-600 text-white border border-white/10 rounded text-[8px] font-black shadow animate-pulse">
-                  EMERGENCY EXIT
-                </div>
-              )}
-
-              {/* Washrooms Overlay */}
-              {(activeMapFeature === 'all' || activeMapFeature === 'restrooms') && (
-                <>
-                  <div className="absolute top-1/2 right-12 -translate-y-1/2 px-1.5 py-0.5 bg-teal-500 text-white rounded text-[8px] font-bold">
-                    WC-ADA
-                  </div>
-                  <div className="absolute top-1/2 left-12 -translate-y-1/2 px-1.5 py-0.5 bg-teal-500 text-white rounded text-[8px] font-bold">
-                    WC-ADA
-                  </div>
-                </>
-              )}
-
-            </div>
+            <StadiumMap activeMapFeature={activeMapFeature} />
           </div>
 
           <div className="text-[10px] text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800/80 pt-4 flex items-center justify-between">

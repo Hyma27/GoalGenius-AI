@@ -69,18 +69,20 @@ export const Settings: React.FC = () => {
           </h3>
           
           <div className="flex flex-col gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
-            {[
-              { id: 'en', label: 'English (US / UK)' },
-              { id: 'es', label: 'Español (Spanish)' },
-              { id: 'fr', label: 'Français (French)' },
-              { id: 'pt', label: 'Português (Portuguese)' },
-              { id: 'hi', label: 'हिन्दी (Hindi)' },
-              { id: 'te', label: 'తెలుగు (Telugu)' },
-              { id: 'ar', label: 'العربية (Arabic)' },
-            ].map(lang => (
+            {(
+              [
+                { id: 'en', label: 'English (US / UK)' },
+                { id: 'es', label: 'Español (Spanish)' },
+                { id: 'fr', label: 'Français (French)' },
+                { id: 'pt', label: 'Português (Portuguese)' },
+                { id: 'hi', label: 'हिन्दी (Hindi)' },
+                { id: 'te', label: 'తెలుగు (Telugu)' },
+                { id: 'ar', label: 'العربية (Arabic)' },
+              ] as const
+            ).map(lang => (
               <button
                 key={lang.id}
-                onClick={() => setLanguage(lang.id as any)}
+                onClick={() => setLanguage(lang.id)}
                 className={`py-3 px-4 rounded-xl text-left border transition-all ${
                   language === lang.id 
                     ? 'bg-blue-100 border-blue-300 text-blue-600 dark:bg-blue-900/40' 

@@ -29,16 +29,18 @@ export const SmartNavigation: React.FC = () => {
           <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100 mb-1">Navigation Toggles</h3>
           
           <div className="flex flex-col gap-2">
-            {[
-              { id: 'fastest', label: 'AI Fastest Route to Seat', color: 'bg-blue-600 text-white border-blue-600' },
-              { id: 'exits', label: 'Emergency Exit Paths', color: 'bg-red-600 text-white border-red-600' },
-              { id: 'restrooms', label: 'Accessible Washrooms', color: 'bg-teal-600 text-white border-teal-600' },
-              { id: 'food', label: 'Food Courts & Stalls', color: 'bg-amber-600 text-white border-amber-600' },
-              { id: 'medical', label: 'First Aid & Medical', color: 'bg-purple-600 text-white border-purple-600' },
-            ].map(item => (
+            {(
+              [
+                { id: 'fastest', label: 'AI Fastest Route to Seat', color: 'bg-blue-600 text-white border-blue-600' },
+                { id: 'exits', label: 'Emergency Exit Paths', color: 'bg-red-600 text-white border-red-600' },
+                { id: 'restrooms', label: 'Accessible Washrooms', color: 'bg-teal-600 text-white border-teal-600' },
+                { id: 'food', label: 'Food Courts & Stalls', color: 'bg-amber-600 text-white border-amber-600' },
+                { id: 'medical', label: 'First Aid & Medical', color: 'bg-purple-600 text-white border-purple-600' },
+              ] as const
+            ).map(item => (
               <button
                 key={item.id}
-                onClick={() => setActiveOverlay(item.id as any)}
+                onClick={() => setActiveOverlay(item.id)}
                 className={`w-full py-3.5 px-4 rounded-xl text-left text-xs font-bold border transition-all ${
                   activeOverlay === item.id 
                     ? `${item.color} shadow-sm scale-102` 

@@ -6,6 +6,43 @@ import {
   Trash2, Maximize2, Minimize2, Check, ArrowRight, Trophy
 } from 'lucide-react';
 
+// Speech Recognition Browser API Interfaces for strict typing
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
+interface SpeechRecognitionResult {
+  isFinal: boolean;
+  length: number;
+  [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionResultList {
+  length: number;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionEvent {
+  resultIndex: number;
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionInstance {
+  continuous: boolean;
+  lang: string;
+  onstart: () => void;
+  onerror: () => void;
+  onend: () => void;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  start: () => void;
+}
+
+interface ExtendedWindow extends Window {
+  SpeechRecognition?: new () => SpeechRecognitionInstance;
+  webkitSpeechRecognition?: new () => SpeechRecognitionInstance;
+}
+
 interface ChatMessage {
   sender: 'user' | 'ai';
   text: string;
@@ -56,7 +93,8 @@ export const AIChatBot: React.FC = () => {
 
   // Web Speech API - Speech to Text
   const startListening = () => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const extWindow = window as unknown as ExtendedWindow;
+    const SpeechRecognition = extWindow.SpeechRecognition || extWindow.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Speech recognition is not supported in this browser. Please try Chrome or Edge.");
       return;
@@ -72,7 +110,7 @@ export const AIChatBot: React.FC = () => {
     recognition.onerror = () => setIsListening(false);
     recognition.onend = () => setIsListening(false);
     
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       const resultText = event.results[0][0].transcript;
       setInputValue(resultText);
     };

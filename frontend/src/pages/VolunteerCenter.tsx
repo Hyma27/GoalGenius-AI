@@ -9,7 +9,7 @@ export const VolunteerCenter: React.FC = () => {
   
   // Incident submission form
   const [incType, setIncType] = useState('Facility & Spills');
-  const [severity, setSeverity] = useState('LOW');
+  const [severity, setSeverity] = useState<'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'>('LOW');
   const [location, setLocation] = useState('Concourse Section 202');
   const [description, setDescription] = useState('');
   
@@ -30,7 +30,7 @@ export const VolunteerCenter: React.FC = () => {
 
     reportIncident({
       type: incType,
-      severity: severity as any,
+      severity,
       location,
       description,
       suggestedResponse: `AI Automated response dispatch nearest ${incType} squad to ${location}.`,
@@ -142,7 +142,7 @@ export const VolunteerCenter: React.FC = () => {
                 <label className="font-semibold text-slate-600 dark:text-slate-300">Severity</label>
                 <select 
                   value={severity}
-                  onChange={e => setSeverity(e.target.value)}
+                  onChange={e => setSeverity(e.target.value as 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL')}
                   className="px-3 py-2 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 rounded-xl"
                 >
                   <option value="LOW">Low - General cleanup/fix</option>

@@ -35,14 +35,16 @@ export const TravelCopilot: React.FC = () => {
 
       {/* Route Mode Matrix */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { id: 'fastest', label: 'Fastest Route', desc: 'Metro Transit via Line 1 (28m total)', icon: <Clock className="w-5 h-5 text-blue-500" /> },
-          { id: 'cheapest', label: 'Cheapest Route', desc: 'Bus Link + Walk ($2.00 total)', icon: <DollarSign className="w-5 h-5 text-emerald-500" /> },
-          { id: 'eco', label: 'Eco-Friendly Route', desc: 'Metro or Walking (0.0kg CO2)', icon: <Leaf className="w-5 h-5 text-teal-500" /> },
-        ].map(route => (
+        {(
+          [
+            { id: 'fastest', label: 'Fastest Route', desc: 'Metro Transit via Line 1 (28m total)', icon: <Clock className="w-5 h-5 text-blue-500" /> },
+            { id: 'cheapest', label: 'Cheapest Route', desc: 'Bus Link + Walk ($2.00 total)', icon: <DollarSign className="w-5 h-5 text-emerald-500" /> },
+            { id: 'eco', label: 'Eco-Friendly Route', desc: 'Metro or Walking (0.0kg CO2)', icon: <Leaf className="w-5 h-5 text-teal-500" /> },
+          ] as const
+        ).map(route => (
           <button
             key={route.id}
-            onClick={() => setSelectedRoute(route.id as any)}
+            onClick={() => setSelectedRoute(route.id)}
             className={`glass-panel rounded-2xl p-4 text-left border flex items-start gap-3 transition-all ${
               selectedRoute === route.id 
                 ? 'border-blue-500 scale-102 ring-1 ring-blue-500/10' 

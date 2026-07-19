@@ -20,7 +20,7 @@ export const OperationsCenter: React.FC = () => {
   // Analyzer Output State
   const [analyzedOutput, setAnalyzedOutput] = useState<{
     type: string;
-    severity: string;
+    severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
     priority: string;
     location: string;
     response: string;
@@ -83,7 +83,7 @@ export const OperationsCenter: React.FC = () => {
 
     reportIncident({
       type: analyzedOutput.type,
-      severity: analyzedOutput.severity as any,
+      severity: analyzedOutput.severity,
       location: analyzedOutput.location,
       description: `Gemini Analyzed: ${inputText}`,
       suggestedResponse: analyzedOutput.response,

@@ -14,8 +14,8 @@ export const Login: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const { t } = useLanguage();
   
-  const [email, setEmail] = useState('director@worldcup2026.org');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -191,7 +191,7 @@ export const Login: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="director@worldcup2026.org"
+                  placeholder="Enter email address"
                   required
                   className={`px-4 py-2.5 rounded-xl border focus:outline-none transition-all ${
                     theme === 'dark' 
@@ -208,7 +208,7 @@ export const Login: React.FC = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Enter your password"
                   required
                   className={`px-4 py-2.5 rounded-xl border focus:outline-none transition-all ${
                     theme === 'dark' 

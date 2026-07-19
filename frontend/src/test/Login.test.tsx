@@ -26,7 +26,7 @@ describe('Login Component Unit Tests', () => {
     renderLogin();
     expect(screen.getByText(/GoalGenius/i)).toBeInTheDocument();
     expect(screen.getByText(/Welcome Back/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/director@worldcup2026.org/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Enter email address/i)).toBeInTheDocument();
   });
 
   it('renders alternative auth action buttons', () => {

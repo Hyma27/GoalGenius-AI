@@ -18,9 +18,10 @@ export const useGemini = () => {
     setError(null);
 
     // Resolve API endpoint origin (maps to localhost:8000 during dev port 5173 sessions)
-    const targetUrl = window.location.port === '5173'
-      ? 'http://localhost:8000/api/ai/generate'
-      : '/api/ai/generate';
+    const targetUrl =
+      window.location.port === '5173'
+        ? 'http://localhost:8000/api/ai/generate'
+        : 'https://goalgenius-ai-2.onrender.com/api/ai/generate';
 
     try {
       const response = await fetch(targetUrl, {
@@ -47,13 +48,13 @@ export const useGemini = () => {
       };
     } catch (err: any) {
       console.error("Backend AI generator failed, running local backup generator", err);
-      
+
       // Local client-side backup simulation on network disruption
       return new Promise((resolve) => {
         setTimeout(() => {
           setLoading(false);
           const conf = Math.round((95 + Math.random() * 4.9) * 10) / 10;
-          
+
           const mockResponses: Record<string, Record<string, string>> = {
             en: {
               chat: "GoalGenius AI Assistant: I recommend opening Gate D and deploying volunteers from Sector 2 to help with crowd congestion at Gate B. Travel times via Metro Line 2 are currently normal, but we expect rain at 7:00 PM which will slow boarding. How else can I assist stadium ops?",
